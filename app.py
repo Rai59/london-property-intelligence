@@ -50,7 +50,7 @@ def load_and_train():
     y = df_model['saleEstimate_currentPrice']
 
     # Price model
-    price_model = RandomForestRegressor(n_estimators=100, random_state=42, n_jobs=-1)
+    price_model = RandomForestRegressor(n_estimators=50, random_state=42, n_jobs=-1)
     price_model.fit(X, y)
 
     # Confidence classifier
@@ -58,7 +58,7 @@ def load_and_train():
     for col in cat_cols:
         df_conf[col] = LabelEncoder().fit_transform(df_conf[col].astype(str))
     y_conf = LabelEncoder().fit_transform(df_conf['saleEstimate_confidenceLevel'])
-    conf_model = RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=-1)
+    conf_model = RandomForestClassifier(n_estimators=50, random_state=42, n_jobs=-1)
     conf_model.fit(df_conf[features], y_conf)
 
     return df, price_model, conf_model, le_dict, features
