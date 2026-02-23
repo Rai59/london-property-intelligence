@@ -2,7 +2,7 @@
 
 A machine learning web app that predicts London property prices based on location, size, and features.
 
-**[Live Demo](https://london-property-intelligence-oxsj2ewudzwnfow9suf7qs.streamlit.app/)**
+**[Live Demo](https://london-property-intelligence-fg63yd6wfrmsbmluwagvt4.streamlit.app/)**
 
 ## Features
 
