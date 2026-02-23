@@ -2,11 +2,11 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 import folium
 from streamlit_folium import st_folium
 import warnings
+import gc
 warnings.filterwarnings('ignore')
 
 # ── Page config ──────────────────────────────────────────
@@ -20,6 +20,10 @@ st.set_page_config(
 @st.cache_data
 def load_and_train():
     data = pd.read_parquet("data.parquet")
+    
+    # Sample data to reduce memory usage
+    if len(data) > 30000:
+        data = data.sample(30000, random_state=42)
 
     cols = ['bathrooms', 'bedrooms', 'floorAreaSqM', 'livingRooms',
             'tenure', 'propertyType', 'currentEnergyRating', 'outcode',
@@ -27,6 +31,9 @@ def load_and_train():
             'saleEstimate_confidenceLevel']
 
     df = data[cols].copy()
+    del data  # Free memory
+    gc.collect()
+    
     df = df.dropna(subset=['saleEstimate_currentPrice'])
     df = df.dropna(subset=['tenure', 'propertyType', 'currentEnergyRating', 'outcode'])
 
@@ -49,17 +56,20 @@ def load_and_train():
     X = df_model[features]
     y = df_model['saleEstimate_currentPrice']
 
-    # Price model
-    price_model = RandomForestRegressor(n_estimators=50, random_state=42, n_jobs=1)
+    # Price model - REDUCED for memory
+    price_model = RandomForestRegressor(n_estimators=30, random_state=42, n_jobs=1, max_depth=15)
     price_model.fit(X, y)
 
-    # Confidence classifier
+    # Confidence classifier - REDUCED for memory
     df_conf = df[df['saleEstimate_confidenceLevel'].isin(['HIGH', 'MEDIUM', 'LOW'])].copy()
     for col in cat_cols:
         df_conf[col] = LabelEncoder().fit_transform(df_conf[col].astype(str))
     y_conf = LabelEncoder().fit_transform(df_conf['saleEstimate_confidenceLevel'])
-    conf_model = RandomForestClassifier(n_estimators=50, random_state=42, n_jobs=1)
+    conf_model = RandomForestClassifier(n_estimators=30, random_state=42, n_jobs=1, max_depth=10)
     conf_model.fit(df_conf[features], y_conf)
+    
+    del df_model, df_conf, X, y, y_conf  # Free memory
+    gc.collect()
 
     return df, price_model, conf_model, le_dict, features
 
@@ -67,7 +77,7 @@ df, price_model, conf_model, le_dict, features = load_and_train()
 
 # ── Header ────────────────────────────────────────────────
 st.title("🏠 London Property Intelligence")
-st.markdown("*Predict property values and risk profiles across London — powered by 418,000+ property records*")
+st.markdown("*Predict property values and risk profiles across London — powered by machine learning*")
 st.divider()
 
 # ── Layout: two columns ───────────────────────────────────
@@ -183,7 +193,8 @@ st.subheader("🗺️ London Property Price Heatmap")
 
 try:
     from folium.plugins import HeatMap
-    sample = df.dropna(subset=['latitude', 'longitude']).sample(5000, random_state=42)
+    # Reduced sample size for memory
+    sample = df.dropna(subset=['latitude', 'longitude']).sample(min(2000, len(df)), random_state=42)
     m = folium.Map(location=[51.5074, -0.1278], zoom_start=10)
     heat_data = [[r['latitude'], r['longitude'], r['saleEstimate_currentPrice']]
                  for _, r in sample.iterrows()]
@@ -194,4 +205,4 @@ except Exception as e:
 
 # ── Footer ────────────────────────────────────────────────
 st.divider()
-st.caption("Built using 418,201 London property records | Random Forest ML | Data: Kaggle London Property Dataset")
+st.caption("Built using London property records | Random Forest ML | Data: Kaggle London Property Dataset")
