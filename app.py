@@ -19,7 +19,7 @@ st.set_page_config(
 # ── Load & cache data ─────────────────────────────────────
 @st.cache_data
 def load_and_train():
-    data = pd.read_parquet("kaggle_london_house_price_data.parquet")
+    data = pd.read_parquet("data.parquet")
 
     cols = ['bathrooms', 'bedrooms', 'floorAreaSqM', 'livingRooms',
             'tenure', 'propertyType', 'currentEnergyRating', 'outcode',
