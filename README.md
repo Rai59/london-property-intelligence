@@ -18,13 +18,6 @@ A machine learning web app that predicts London property prices based on locatio
 - **Data**: 30,000+ London property records
 - **Visualization**: Folium heatmaps
 
-## Run Locally
-
-```bash
-pip install -r requirements.txt
-streamlit run app.py
-```
-
 ## Dataset
 
 Property data sourced from [Kaggle London Property Dataset](https://www.kaggle.com/), including features like bedrooms, bathrooms, floor area, tenure, energy rating, and postcode.
