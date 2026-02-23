@@ -6,3 +6,4 @@ streamlit-folium
 pyarrow
 streamlit==1.42.0
 altair==5.5.0
+# Force rebuild v2
