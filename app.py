@@ -50,7 +50,7 @@ def load_and_train():
     y = df_model['saleEstimate_currentPrice']
 
     # Price model
-    price_model = RandomForestRegressor(n_estimators=50, random_state=42, n_jobs=-1)
+    price_model = RandomForestRegressor(n_estimators=50, random_state=42, n_jobs=1)
     price_model.fit(X, y)
 
     # Confidence classifier
