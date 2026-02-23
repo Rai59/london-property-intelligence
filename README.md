@@ -14,7 +14,7 @@ built on 418,000+ London residential property records.
 Built as a portfolio project to demonstrate applied data science skills 
 relevant to property intelligence, valuation modelling, and risk assessment.
 
-🔗 **[Live Dashboard →]([https://your-streamlit-url.streamlit.app](https://london-property-intelligence-oxsj2ewudzwnfow9suf7qs.streamlit.app/))**
+🔗 **[Live Dashboard →](https://london-property-intelligence-oxsj2ewudzwnfow9suf7qs.streamlit.app/)**
 
 ---
 
